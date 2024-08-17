@@ -29,6 +29,9 @@ class ConcatenateStringsArgs(BaseModel):
     a: str = Field(description="First string")
     b: str = Field(description="Second string")
 
+class reverse_stringArgs(BaseModel):
+    text: str = Field(description="single string")
+
 
 # Create tools using the Tool and StructuredTool constructor approach
 tools = [
@@ -39,12 +42,18 @@ tools = [
         func=greet_user,  # Function to execute
         description="Greets the user by name.",  # Description of the tool
     ),
-    # Use Tool for another simple function with a single input parameter.
-    Tool(
-        name="ReverseString",  # Name of the tool
+        StructuredTool.from_function(
         func=reverse_string,  # Function to execute
-        description="Reverses the given string.",  # Description of the tool
-    ),
+        name="reverse_string",  # Name of the tool
+        description="Reverses the given string, Input to this tool must be a single string",  # Description of the tool
+        args_schema=reverse_stringArgs,  # Schema defining the tool's input arguments
+    ),  # Newer version Langchain seems don't work well with previous "ReverseString" code. 
+    # # Use Tool for another simple function with a single input parameter.
+    # Tool(
+    #     name="ReverseString",  # Name of the tool
+    #     func=reverse_string,  # Function to execute
+    #     description="Reverses the given string, Input to this tool must be a single string, not a list.",  # Description of the tool
+    # ),
     # Use StructuredTool for more complex functions that require multiple input parameters.
     # StructuredTool allows us to define an input schema using Pydantic, ensuring proper validation and description.
     StructuredTool.from_function(
