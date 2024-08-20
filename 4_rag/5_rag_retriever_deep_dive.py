@@ -25,10 +25,7 @@ def query_vector_store(
 ):
     if os.path.exists(persistent_directory):
         print(f"\n--- Querying the Vector Store {store_name} ---")
-        db = Chroma(
-            persist_directory=persistent_directory,
-            embedding_function=embedding_function,
-        )
+
         retriever = db.as_retriever(
             search_type=search_type,
             search_kwargs=search_kwargs,
@@ -54,8 +51,10 @@ query = "How did Juliet die?"
 # It finds the most similar documents to the query vector based on cosine similarity.
 # Use this when you want to retrieve the top k most similar documents.
 print("\n--- Using Similarity Search ---")
-query_vector_store("chroma_db_with_metadata", query,
-                   embeddings, "similarity", {"k": 3})
+query_vector_store("chroma_db_with_metadata", 
+                   query,
+                   "similarity", 
+                   {"k": 3})
 
 # 2. Max Marginal Relevance (MMR)
 # This method balances between selecting documents that are relevant to the query and diverse among themselves.
@@ -69,7 +68,6 @@ print("\n--- Using Max Marginal Relevance (MMR) ---")
 query_vector_store(
     "chroma_db_with_metadata",
     query,
-    embeddings,
     "mmr",
     {"k": 3, "fetch_k": 20, "lambda_mult": 0.5},
 )
@@ -82,7 +80,6 @@ print("\n--- Using Similarity Score Threshold ---")
 query_vector_store(
     "chroma_db_with_metadata",
     query,
-    embeddings,
     "similarity_score_threshold",
     {"k": 3, "score_threshold": 0.1},
 )
